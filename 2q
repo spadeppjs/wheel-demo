@@ -1,0 +1,98 @@
+解决overflow：hidden的bug
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   index.html
+#	modified:   src/popover.vue
+#
+# ------------------------ >8 ------------------------
+# Do not touch the line above.
+# Everything below will be removed.
+diff --git a/index.html b/index.html
+index e2b357b..997f14b 100644
+--- a/index.html
++++ b/index.html
+@@ -45,8 +45,9 @@
+ 
+ </head>
+ 
+-<body style="border:1px solid red">
+-    <div id="app" style="padding-top:100px; padding-left: 100px;">
++<body>
++    <div id="app" style="padding-top:100px; padding-left: 100px;border:1px solid red">
++    <div style="overflow:hidden;border: 1px solid green;padding:5px;">
+         <g-popover>
+             <template slot="content">
+                 <div>popover的内容</div>
+@@ -92,6 +93,7 @@
+                 <g-button icon='right' icon-position='right'>下一页</g-button>
+             </g-button-group>
+         </div> -->
++                
+     </div>
+     <script src="./src/app.js"></script>
+ </body>
+diff --git a/src/popover.vue b/src/popover.vue
+index 24d5d72..2c3960e 100644
+--- a/src/popover.vue
++++ b/src/popover.vue
+@@ -1,9 +1,11 @@
+ <template>
+-  <div class="popover" @click.stop="xxx">
+-    <div class="content-wrapper" v-if="visible">
+-      <slot name="content"></slot>
++  <div class="popover" @click="xxx">
++    <div  ref="contentWrapper" class="content-wrapper" v-if="visible"> 
++      <slot name="content"></slot> 
+     </div>
+-    <slot></slot>
++    <span ref="triggerWrapper">
++      <slot></slot>
++    </span>
+   </div>
+ </template>
+ <script>
+@@ -15,15 +17,18 @@ export default {
+   methods: {
+     xxx() {
+       this.visible = !this.visible;
+-      console.log("切换");
+       if (this.visible === true) {
+-        this.$nextTick(() => {
++        setTimeout(() => {
++          document.body.appendChild(this.$refs.contentWrapper)
++          let {width,height,top,left} = this.$refs.triggerWrapper.getBoundingClientRect()
++          this.$refs.contentWrapper.style.left = left + window.scrollX + 'px'
++          this.$refs.contentWrapper.style.top = top + window.scrollY + 'px'
+           let eventHandler = () => {
+             this.visible = false
+             document.removeEventListener("click", eventHandler)
+           }
+           document.addEventListener("click", eventHandler)
+-        })
++        },0)
+       }
+     }
+   }
+@@ -34,11 +39,11 @@ export default {
+   display: inline-block;
+   vertical-align: top;
+   position: relative;
+-  > .content-wrapper {
+-    position: absolute;
+-    bottom: 100%;
+-    border: 1px solid red;
+-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+-  }
++}
++.content-wrapper {
++  position: absolute;
++  border: 1px solid red;
++  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
++  transform: translateY(-100%);
+ }
+ </style>

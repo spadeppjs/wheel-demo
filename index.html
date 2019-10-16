@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>轮子</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --button-height: 32px;
+            --font-size: 14px;
+            --button-bg: white;
+            --button-active-bg: #eee;
+            --border-radius: 4px;
+            --color: #333;
+            --border-color: #999;
+            --border-color-hover: #666;
+        }
+
+        #app {
+            /* margin: 10px; */
+        }
+
+        body {
+            font-size: var(--font-size);
+        }
+
+        .box {
+            margin: 20px;
+        }
+    </style>
+    <style>
+        .icon {
+            height: 1em;
+            width: 1em;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="app" style="padding:100px">
+        <g-collapse :selected.sync="selectedTab" single>
+            <g-collapse-item title="标题1" name='1'>内容1</g-collapse-item>
+            <g-collapse-item title="标题2" name='2'>内容2</g-collapse-item>
+            <g-collapse-item title="标题3" name='3'>内容3</g-collapse-item>
+        </g-collapse>
+        {{selectedTab}}
+        <g-button>默认按钮</g-button>
+        <g-button icon="settings">默认按钮</g-button>
+        <g-button :loading="true">默认按钮</g-button>
+        <g-button disabled>默认按钮</g-button>
+    </div>
+
+    <script src="./src/app.js"></script>
+</body>
+
+</html>
